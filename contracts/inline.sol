@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-import "solidity-bytes-utils/contracts/BytesLib.sol";
-
 pragma solidity ^0.8.4;
 
 contract BitWise {
@@ -65,38 +63,16 @@ contract String {
             let byteOffset := add(add(inputBytes, 0x20), index)
             let word := mload(byteOffset)
             // Mask out all but the first byte (the target character)
-            let char := and(word, 0xff00000000000000000000000000000000000000000000000000000000000000)
-            
+            let char := and(
+                word,
+                0xff00000000000000000000000000000000000000000000000000000000000000
+            )
+
             // Store the result (char in the first byte, 0 in the second byte)
             mstore(0, char)
-            
+
             // Return the first 2 bytes (16 bits) of the stored result
             return(0, 0x20)
-
         }
-    }
-}
-
-contract Stringfortest {
-    using BytesLib for bytes;
-
-    function charAt(string memory input, uint256 index)
-        public
-        pure
-        returns (bytes2)
-    {
-        // Convert the string to bytes
-        bytes memory inputBytes = bytes(input);
-
-        // Check if the index is out of bounds
-        if (index >= inputBytes.length) {
-            return bytes2(0x0000);
-        }
-
-        // Get the character at the specified index
-        bytes memory charBytes = inputBytes.slice(index, 1);
-
-        // Convert the byte to bytes2, padding with a zero byte
-        return bytes2(abi.encodePacked(charBytes[0], bytes1(0)));
     }
 }
