@@ -63,11 +63,16 @@ contract String {
 
             // Calculate the byte offset for the character
             let byteOffset := add(add(inputBytes, 0x20), index)
-            let char := mload(byteOffset) // Load the byte at the given index
+            let word := mload(byteOffset)
+            // Mask out all but the first byte (the target character)
+            let char := and(word, 0xff00000000000000000000000000000000000000000000000000000000000000)
+            
+            // Store the result (char in the first byte, 0 in the second byte)
+            mstore(0, char)
+            
+            // Return the first 2 bytes (16 bits) of the stored result
+            return(0, 0x20)
 
-            // Create the bytes2 return value
-            mstore(0x0, shl(0x10, char)) // Shift the byte to the upper byte of bytes2
-            return(0x0, 0x20) // Return the result
         }
     }
 }
